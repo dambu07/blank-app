@@ -28,9 +28,44 @@ def summarize_document(file_bytes):
     response = call_gemini_api(file_bytes)
     return response.get('summary', 'No summary provided.')
 
-# Function to analyze health report
-def analyze_health_report(summary):
-    return "Recommended care strategies, prescriptions, and dietary suggestions."
+# Function to customize response based on keywords in the summary
+def generate_doctor_advice(summary):
+    advice = {
+        "prescription": "",
+        "diet": "",
+        "exercise": "",
+        "general": ""
+    }
+    
+    # Prescription advice based on conditions
+    if "inflammation" in summary.lower():
+        advice["prescription"] += "- **Anti-inflammatory medications**: NSAIDs like ibuprofen may help with inflammation.\n"
+    if "high blood pressure" in summary.lower():
+        advice["prescription"] += "- **Blood pressure management**: ACE inhibitors or beta-blockers could be beneficial.\n"
+    if "chronic pain" in summary.lower():
+        advice["prescription"] += "- **Pain management**: Medications like acetaminophen may help manage chronic pain.\n"
+
+    # Dietary advice based on conditions
+    if "cholesterol" in summary.lower():
+        advice["diet"] += "- **Low-cholesterol foods**: Limit intake of red meat, and consume more vegetables and whole grains.\n"
+    if "diabetes" in summary.lower() or "blood sugar" in summary.lower():
+        advice["diet"] += "- **Low-sugar diet**: Focus on whole foods, and avoid processed sugars to manage blood sugar levels.\n"
+    if "weight" in summary.lower():
+        advice["diet"] += "- **Balanced diet**: Consider a nutrient-dense, calorie-controlled diet to manage weight.\n"
+
+    # Exercise recommendations based on conditions
+    if "heart" in summary.lower() or "cardio" in summary.lower():
+        advice["exercise"] += "- **Aerobic exercises**: Activities like brisk walking and swimming are great for heart health.\n"
+    if "arthritis" in summary.lower() or "joint pain" in summary.lower():
+        advice["exercise"] += "- **Low-impact exercises**: Gentle activities such as yoga and cycling can ease joint pain.\n"
+
+    # General advice based on conditions
+    if "stress" in summary.lower():
+        advice["general"] += "- **Stress management**: Techniques like meditation and breathing exercises are beneficial for mental health.\n"
+    if "insomnia" in summary.lower() or "sleep" in summary.lower():
+        advice["general"] += "- **Improved sleep habits**: Aim for a consistent bedtime routine and reduce screen time before bed.\n"
+    
+    return advice
 
 # Function for AI-based health chat responses
 def chat_with_report(summary):
@@ -38,33 +73,25 @@ def chat_with_report(summary):
     condition_overview = f"The health report indicates the following summary of your condition:\n\n{summary}\n\n"
     st.write(condition_overview)
     
+    # Generate customized advice based on the summary
+    advice = generate_doctor_advice(summary)
+    
     # Buttons for specific health-related responses with AI-based suggestions
     if st.button("Get Prescription Advice"):
         st.write("As your healthcare assistant, here are possible prescription suggestions:")
-        st.write("- **Anti-inflammatory medications**: NSAIDs like ibuprofen may help if inflammation is present.")
-        st.write("- **Blood pressure management**: ACE inhibitors, beta-blockers, or diuretics may be options if needed.")
-        st.write("- **Pain management**: Acetaminophen or specific pain relievers tailored to chronic pain.")
-    
+        st.write(advice["prescription"] if advice["prescription"] else "No specific prescription advice based on the report.")
+
     if st.button("Get Dietary Suggestions"):
         st.write("Based on the health report, here are dietary adjustments:")
-        st.write("- **High-fiber foods**: More vegetables, fruits, and whole grains can aid digestion and blood sugar.")
-        st.write("- **Low-sodium diet**: Reducing salt intake can help manage blood pressure.")
-        st.write("- **Healthy fats**: Foods like avocados, nuts, and olive oil support heart health.")
-        st.write("- **Hydration**: Aim for adequate water intake daily for overall health.")
+        st.write(advice["diet"] if advice["diet"] else "No specific dietary suggestions based on the report.")
 
     if st.button("Get Exercise Recommendations"):
         st.write("Here are exercise recommendations suitable for your condition:")
-        st.write("- **Aerobic exercises**: Brisk walking, cycling, or swimming for cardiovascular health.")
-        st.write("- **Strength training**: Light resistance exercises for muscle and joint support.")
-        st.write("- **Flexibility and balance**: Yoga or stretching exercises for flexibility and mental wellness.")
-        st.write("- **Customized plan**: A fitness professional can provide a personalized program if needed.")
+        st.write(advice["exercise"] if advice["exercise"] else "No specific exercise recommendations based on the report.")
 
     if st.button("General Advice"):
         st.write("General health advice for ongoing wellness:")
-        st.write("- **Routine check-ups**: Regular check-ups help monitor health changes and address concerns early.")
-        st.write("- **Stress management**: Techniques like meditation and deep breathing reduce stress.")
-        st.write("- **Adequate sleep**: Aim for 7-8 hours of restful sleep each night.")
-        st.write("- **Limit alcohol and avoid smoking**: Reducing alcohol and avoiding tobacco can greatly reduce risks.")
+        st.write(advice["general"] if advice["general"] else "No specific general advice based on the report.")
 
 # App layout and main execution flow
 st.title('Medical Report Assistant')
@@ -88,11 +115,6 @@ if uploaded_file is not None:
     summary = summarize_document(file_bytes)
     st.subheader('Summary')
     st.write(summary)
-    
-    # Display general health recommendations based on the summary
-    feedback = analyze_health_report(summary)
-    st.subheader('Health Recommendations')
-    st.write(feedback)
     
     # Interactive Chat Feature for Specific Questions
     st.subheader("Chat with your Health Report")
