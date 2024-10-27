@@ -9,7 +9,7 @@ import io
 api_key = st.secrets["gemini_api_key"]
 
 # Define the API endpoint
-api_endpoint = "https://ai.googleapis.com/v1beta1/"
+api_endpoint = "https://genai.googleapis.com/v1/models/gemini:predict"
 
 # Function to call Gemini API
 def call_gemini_api(file_bytes):
