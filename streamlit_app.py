@@ -34,16 +34,23 @@ def analyze_health_report(summary):
     return "Recommended care strategies, prescriptions, and dietary suggestions."
 
 # Function to handle chat responses
-def chat_with_report(question, summary):
-    # Simulate a response based on summary and question
-    if "prescription" in question.lower():
-        return "Based on the report, I would recommend discussing potential prescriptions with your doctor."
-    elif "diet" in question.lower():
-        return "The report suggests maintaining a balanced diet. Consider foods rich in nutrients as per your doctor's advice."
-    elif "exercise" in question.lower():
-        return "Regular, moderate exercise is generally beneficial. Please consult a healthcare provider for personalized recommendations."
-    else:
-        return f"As a healthcare assistant, I suggest consulting the summary: {summary}. For detailed advice, please talk to a professional."
+def chat_with_report(summary):
+    # Start with an overview of the health report condition
+    condition_overview = f"The health report indicates the following summary of your condition:\n\n{summary}\n\n"
+    
+    # Display the condition overview first
+    st.write(condition_overview)
+    
+    # Buttons for specific health-related responses
+    if st.button("Get Prescription Advice"):
+        st.write("Based on the report, I would recommend discussing potential prescriptions with your doctor.")
+    if st.button("Get Dietary Suggestions"):
+        st.write("The report suggests maintaining a balanced diet. Consider foods rich in nutrients as per your doctor's advice.")
+    if st.button("Get Exercise Recommendations"):
+        st.write("Regular, moderate exercise is generally beneficial. Please consult a healthcare provider for personalized recommendations.")
+    if st.button("General Advice"):
+        st.write(f"As a healthcare assistant, I suggest consulting the summary: {summary}. For detailed advice, please talk to a professional.")
+
 
 st.title('Medical Report Assistant')
 uploaded_file = st.file_uploader("Upload your medical report (X-ray, ECG, Insurance document)", type=['png', 'jpg', 'jpeg', 'pdf'])
