@@ -1,2 +1,5 @@
 streamlit
 pdfplumber
+requests
+PIL
+os
