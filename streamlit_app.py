@@ -33,6 +33,18 @@ def analyze_health_report(summary):
     # Placeholder function for analyzing the health report
     return "Recommended care strategies, prescriptions, and dietary suggestions."
 
+# Function to handle chat responses
+def chat_with_report(question, summary):
+    # Simulate a response based on summary and question
+    if "prescription" in question.lower():
+        return "Based on the report, I would recommend discussing potential prescriptions with your doctor."
+    elif "diet" in question.lower():
+        return "The report suggests maintaining a balanced diet. Consider foods rich in nutrients as per your doctor's advice."
+    elif "exercise" in question.lower():
+        return "Regular, moderate exercise is generally beneficial. Please consult a healthcare provider for personalized recommendations."
+    else:
+        return f"As a healthcare assistant, I suggest consulting the summary: {summary}. For detailed advice, please talk to a professional."
+
 st.title('Medical Report Assistant')
 uploaded_file = st.file_uploader("Upload your medical report (X-ray, ECG, Insurance document)", type=['png', 'jpg', 'jpeg', 'pdf'])
 
@@ -60,3 +72,11 @@ if uploaded_file is not None:
     
     st.subheader('Health Recommendations')
     st.write(feedback)
+    
+    # Chat feature
+    st.subheader("Chat with your Health Report")
+    question = st.text_input("Ask a question about the report (e.g., 'What are the diet recommendations?')")
+    if question:
+        response = chat_with_report(question, summary)
+        st.write("Assistant's Response:")
+        st.write(response)
